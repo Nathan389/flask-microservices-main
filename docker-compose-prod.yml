@@ -36,10 +36,27 @@ services:
     build: ./nginx/
     restart: always
     ports:
-        - 80:80
+      - 80:80
     depends_on:
-        users-service:
-            condition: service_started
+      users-service:
+        condition: service_started
+      web-service:
+        condition: service_started
     links:
-        - users-service
-        
+      - users-service
+      - web-service
+  
+  web-service:
+    container_name: web-service
+    build:
+      context: https://github.com/Nathan389/flask-microservices-client.git
+      args:
+        - NODE_ENV=production
+        - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
+    ports:
+      - '9000:9000' # expose ports - HOST:CONTAINER
+    depends_on:
+      users-service:
+         condition: service_started
+    links:
+      - users-service

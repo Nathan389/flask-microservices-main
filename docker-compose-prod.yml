@@ -24,6 +24,7 @@ services:
       - APP_SETTINGS=project.config.ProductionConfig
       - DATABASE_URL=postgres://postgres:postgres@users-db:5432/users_prod
       - DATABASE_TEST_URL=postgres://postgres:postgres@users-db:5432/users_test
+      - SECRET_KEY=${SECRET_KEY}
     depends_on:
       users-db:
         condition: service_healthy
@@ -51,7 +52,7 @@ services:
     build:
       context: https://github.com/Nathan389/flask-microservices-client.git
       args:
-        - NODE_ENV=production
+        - NODE_ENV=development
         - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
     ports:
       - '9000:9000' # expose ports - HOST:CONTAINER

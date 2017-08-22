@@ -57,12 +57,12 @@ services:
       #volumes:
       #  - '../flask-microservices-client:/usr/src/app'
       #  - '/usr/src/app/node_modules'
-      ports:
-        - '9000:9000' # expose ports - HOST:CONTAINER
-      args:   #environment:
-        - NODE_ENV=development
-        - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
-    
+    ports:
+      - '9000:9000' # expose ports - HOST:CONTAINER
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
+
     depends_on:
       users-service:
         condition: service_started

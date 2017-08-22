@@ -56,18 +56,18 @@ services:
       - '9000:9000' # expose ports - HOST:CONTAINER
     depends_on:
       users-service:
-         condition: service_started
+        condition: service_started
     links:
       - users-service
 
-  #swagger:
-  #  container_name: swagger
-  #  build:
-  #    context: https://github.com/Nathan389/flask-microservices-swagger.git
-  #  ports:
-  #    - 8080:8080  # expose ports - HOST:CONTAINER
-  #  environment:
-  #    - API_URL=https://raw.githubusercontent.com/Nathan389/flask-microservices-swagger/master/swagger.json
-  #  depends_on:
-  #    users-service:
-  #      condition: service_started
+  swagger:
+    container_name: swagger
+    build:
+      context: https://github.com/Nathan389/flask-microservices-swagger.git
+    ports:
+      - '8080:8080'  # expose ports - HOST:CONTAINER
+    environment:
+      - API_URL=https://raw.githubusercontent.com/Nathan389/flask-microservices-swagger/master/swagger.json
+    depends_on:
+      users-service:
+        condition: service_started

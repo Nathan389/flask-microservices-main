@@ -6,7 +6,7 @@ services:
     container_name: users-db
     build: https://github.com/Nathan389/flask-microservices-users.git#master:project/db
     ports:
-        - 5435:5432  # expose ports - HOST:CONTAINER
+      - 5435:5432  # expose ports - HOST:CONTAINER
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -16,8 +16,6 @@ services:
   users-service:
     container_name: users-service
     build: https://github.com/Nathan389/flask-microservices-users.git
-    #ports:
-    #  - 5001:5000 # expose ports - HOST:CONTAINER
     expose:
       - '5000'
     environment:
@@ -31,7 +29,7 @@ services:
     links:
       - users-db
     command: gunicorn -b 0.0.0.0:5000 manage:app
-    
+
   nginx:
     container_name: nginx
     build: ./nginx/
@@ -46,7 +44,7 @@ services:
     links:
       - users-service
       - web-service
-  
+
   web-service:
     container_name: web-service
     build:
@@ -61,3 +59,15 @@ services:
          condition: service_started
     links:
       - users-service
+
+  #swagger:
+  #  container_name: swagger
+  #  build:
+  #    context: https://github.com/Nathan389/flask-microservices-swagger.git
+  #  ports:
+  #    - 8080:8080  # expose ports - HOST:CONTAINER
+  #  environment:
+  #    - API_URL=https://raw.githubusercontent.com/Nathan389/flask-microservices-swagger/master/swagger.json
+  #  depends_on:
+  #    users-service:
+  #      condition: service_started

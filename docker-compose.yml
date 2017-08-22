@@ -4,11 +4,10 @@ services:
 
   users-db:
     container_name: users-db
-    build: 
-        context: ../flask-microservices-users/project/db
-        #https://github.com/Nathan389/flask-microservices-users.git#master:project/db
+    build:
+      context: ../flask-microservices-users/project/db
     ports:
-        - 5435:5432  # expose ports - HOST:CONTAINER
+      - 5435:5432  # expose ports - HOST:CONTAINER
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -17,9 +16,11 @@ services:
 
   users-service:
     container_name: users-service
-    build: 
-        context: ../flask-microservices-users
-        #https://github.com/Nathan389/flask-microservices-users.git
+    build:
+      context: ../flask-microservices-users
+      dockerfile: Dockerfile-local
+    volumes:
+      - '../flask-microservices-users:/usr/src/app'
     ports:
       - 5001:5000 # expose ports - HOST:CONTAINER
     environment:
@@ -32,7 +33,7 @@ services:
         condition: service_healthy
     links:
       - users-db
-      
+
   nginx:
     container_name: nginx
     build: ./nginx/
@@ -42,24 +43,40 @@ services:
     depends_on:
       users-service:
         condition: service_started
-      web-service: 
+      web-service:
         condition: service_started
     links:
       - users-service
       - web-service
-      
+
   web-service:
     container_name: web-service
-    build: 
+    build:
       context: ../flask-microservices-client
-      #context: https://github.com/Nathan389/flask-microservices-client.git
-      args:
+      #dockerfile: Dockerfile-local
+      #volumes:
+      #  - '../flask-microservices-client:/usr/src/app'
+      #  - '/usr/src/app/node_modules'
+      ports:
+        - '9000:9000' # expose ports - HOST:CONTAINER
+      args:   #environment:
         - NODE_ENV=development
         - REACT_APP_USERS_SERVICE_URL=${REACT_APP_USERS_SERVICE_URL}
-    ports:
-        - '9000:9000' # expose ports - HOST:CONTAINER
+    
     depends_on:
       users-service:
         condition: service_started
     links:
       - users-service
+
+  swagger:
+    container_name: swagger
+    build:
+      context: ../flask-microservices-swagger
+    ports:
+      - '8080:8080' # expose ports - HOST:CONTAINER
+    environment:
+      - API_URL=https://raw.githubusercontent.com/Nathan389/flask-microservices-swagger/master/swagger.json
+    depends_on:
+      users-service:
+        condition: service_started

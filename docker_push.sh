@@ -1,8 +1,8 @@
 #!/bin/sh
-if [ -z "$TRAVIS_PULL_REQUEST" ] || [ "$TRAVIS_PULL_REQUEST" == "false"]
-then
 
-  if [ "$TRAVIS_BRANCH" == "development"]
+if [ -z "$TRAVIS_PULL_REQUEST" ] || [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+
+  if [ "$TRAVIS_BRANCH" == "development" ]
   then
     docker login -e $DOCKER_EMAIL -u $DOCKER_ID -p $DOCKER_PASSWORD
     export TAG=$TRAVIS_BRANCH
@@ -17,7 +17,8 @@ then
     ./awscli-bundle/install -b ~/bin/aws
     export PATH=~/bin:$PATH
     # add AWS_ACCOUNT_ID, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY env vars
-    eval TAG=$TRAVIS_BRANCH
+    eval $(aws ecr get-login --region us-east-1)
+    export TAG=$TRAVIS_BRANCH
     export REPO=$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
   fi
 
@@ -62,7 +63,7 @@ then
     # nginx
     docker build $NGINX_REPO -t $NGINX:$COMMIT
     docker tag $NGINX:$COMMIT $REPO/$NGINX:$TAG
-    docker push $REPO/$NGINX
+    docker push $REPO/$NGINX:$TAG
   fi
 
 fi

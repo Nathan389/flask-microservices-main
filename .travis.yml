@@ -31,6 +31,8 @@ env:
     - SWAGGER_REPO=https://github.com/Nathan389/$SWAGGER.git
     - NGINX=flask-microservices-nginx
     - NGINX_REPO=https://github.com/Nathan389/flask-microservices-main.git#master:nginx
+    - AWS_RDS_URI="AWS_RDS_URI"   # change
+    - PRODUCTION_SECRET_KEY='a149e6c4b72c310d3367160cebcd5ff3c13789af718bd67a'
 
 before_install:
   - sudo rm /usr/local/bin/docker-compose
